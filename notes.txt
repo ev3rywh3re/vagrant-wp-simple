@@ -1,0 +1,79 @@
+
+#### Older and experimental configurations for puppet/modules/wordpress/init.pp
+
+file { "/vagrant/sites/www":
+  ensure => "directory",
+  source => "/vagrant/wordpress/",
+  recurse => "remote",
+
+  owner => "vagrant",
+  group => "vagrant",
+  mode => 755
+}
+
+
+  # Import a MySQL database for a basic wordpress site.
+  file { '/tmp/wordpress-db.sql':
+    source => 'puppet:///modules/wordpress/wordpress-db.sql'
+  }
+
+  exec { 'load-db':
+    command => '/usr/bin/mysql -u wordpress -p wordpress wordpress < /tmp/wordpress-db.sql && touch /home/vagrant/db-created',
+    creates => '/home/vagrant/db-created',
+  }
+
+  # Copy a working wp-config.php file for the vagrant setup.
+  file { '/vagrant/wordpress/wp-config.php':
+    source => 'puppet:///modules/wordpress/wp-config.php'
+  }
+
+$DB_NAME = hiera('project_db')
+exec { create-project-database:
+  command => "mysql -u root -e \"CREATE DATABASE $DB_NAME DEFAULT CHARACTER SET = 'utf8';\"",
+  unless  => 'mysql -u root information_schema -e "select * from information_schema.schemata;" | grep "project_db"',
+  require => Package[mysql-server],
+}
+
+CREATE DATABASE mydatabase CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE DATABASE mydb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- newer method - http://dba.stackexchange.com/questions/76788/how-to-create-database-with-charset-utf-8/76789
+
+-- OLD --
+
+exec { 'create-database-wordpress':
+  unless  => '/usr/bin/mysql -u root -pvagrant wordpress',
+  command => '/usr/bin/mysql -u root -pvagrant --execute="CREATE DATABASE  \'wordpress\' DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci"',
+}
+
+exec { 'create-user-wordpress':
+  unless  => '/usr/bin/mysql -u wordpress -pwordpress',
+  command => '/usr/bin/mysql -u root -pvagrant --execute="GRANT ALL PRIVILEGES ON wordpress.* TO \'wordpress\'@\'localhost\' IDENTIFIED BY \'wordpress\'"',
+}
+
+
+
+
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+
+
+exec { 'create-database-wordpress':
+  unless  => '/usr/bin/mysql -u root -pvagrant wordpress',
+  command => '/usr/bin/mysql -u root -pvagrant --execute="CREATE DATABASE  \'wordpress\' DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci"',
+}
+
+
+
+exec { 'create-user-wordpress':
+  unless  => '/usr/bin/mysql -u wordpress -pwordpress',
+  command => '/usr/bin/mysql -u root -pvagrant --execute="GRANT ALL PRIVILEGES ON wordpress.* TO \'wordpress\'@\'localhost\' IDENTIFIED BY \'wordpress\'"',
+}
+
+
+## Tidy cleanup method - not working.
+
+tidy { '/vagrant/':
+  recurse => true,
+  rmdirs  => true,
+  matches => [ 'phpmyadmin*', 'phpMyAdmin*', 'latest.tar.*', 'wordpress' ],
+}
