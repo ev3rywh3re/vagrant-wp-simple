@@ -17,6 +17,8 @@ class { 'apache2::install': }
 class { 'php5::install': }
 class { 'mysql::install': }
 
+class { 'startup::install': stage => 'setup'  }
+
 class { 'wordpress::install': stage => 'setup' }
 class { 'phpmyadmin::install': stage => 'setup' }
 
