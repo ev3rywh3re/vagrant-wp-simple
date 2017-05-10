@@ -23,27 +23,6 @@ class wordpress::install {
     creates => '/vagrant/latest.tar.gz'
   }
 
-  exec { 'mkdir-sites':
-    command => '/bin/mkdir /vagrant/sites',
-    cwd     => '/vagrant/',
-    require => Exec['download-wordpress'],
-    creates => '/vagrant/sites'
-  }
-
-  exec { 'mkdir-sites-wordpress':
-    command => '/bin/mkdir /vagrant/sites/www',
-    cwd     => '/vagrant/',
-    require => Exec['mkdir-sites'],
-    creates => '/vagrant/sites/www'
-  }
-
-  exec { 'mkdir-sites-phpmyadmin':
-    command => '/bin/mkdir /vagrant/sites/db',
-    cwd     => '/vagrant/',
-    require => Exec['mkdir-sites'],
-    creates => '/vagrant/sites/db'
-  }
-
   exec { 'untar-wordpress':
     command => '/bin/tar -xzvf /vagrant/latest.tar.gz',
     cwd     => '/vagrant/',
