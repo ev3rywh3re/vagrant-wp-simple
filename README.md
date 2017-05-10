@@ -45,6 +45,8 @@ These are the basic applications and utilities that need to be installed.
 
 1. Download the archive for this repository.
 2. Uncompress this archive on the computer where you've installed and configured VirtualBox, Vagrant, and Vagrant - HostsUpdater.
+3. Using a terminal application or other command line utility, attempt to run the `# vagrand up` command.
+4. Once complete you should be able to interact with your MySQL databases by visiting http://db.wp.dev, and you can start your WordPress installation by visiting http://www.wp.dev.
 
 ## Simple WordPress Vagrant Usage
 
@@ -77,3 +79,12 @@ Use your computers command line utility and submit the `# vagrant halt` command.
 **To Reset and Remove the Simple WordPress Vagrant**
 
 This option is also still partially non-destructive, but this will remove the virtual system and destroy the database used by your (http://www.wp.dev) site. To perform this option, use your operating system command line utility to run the `# vagrant destroy` command. **This option will not modify files in the [this-directory]/sites/www or [this-directory]/sites/db directories.**
+
+**Other Ways to Interact With Your New System**
+
+This simple Vagrant setup uses the standard Vagrant accounts. **Be aware that this type of system is intended for development purposes and this system is not secure. Please review all security before making systems like this accessible to the internet.**
+
+You will be able to access this systems by using SSH on your local system. Using SSH will allow you to login and access the virtual server from the local machine where you've installed VirtualBox and Vagrant. You learn more elsewhere about using SSH to manage Linux systems. Here are the basic user accounts and root or administrative user account.
+
+* General user account: Username: vagrant Password: vagrant
+* Root administrative user: Username: root Password: vagrant
